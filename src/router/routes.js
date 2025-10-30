@@ -2,7 +2,36 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    meta: { requiresAuth: true },
+    children: [
+      { path: '', component: () => import('pages/dasboard/IndexPage.vue') },
+      {
+        path: 'master',
+        children: [
+          {
+            path: 'siswa',
+            component: () => import('pages/master/anggota/IndexPage.vue'),
+            meta: { requiresAuth: true },
+          },
+          {
+            path: 'kas',
+            component: () => import('pages/master/kas/IndexPage.vue'),
+            meta: { requiresAuth: true },
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    path: '/login',
+    component: () => import('layouts/LoginLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('pages/LoginPage.vue'),
+      },
+    ],
   },
 
   // Always leave this as last one,
