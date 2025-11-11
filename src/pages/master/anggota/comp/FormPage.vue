@@ -285,6 +285,35 @@
               />
             </div>
           </div>
+          <!-- <div class="text-weight-bold" style="text-decoration: underline">
+            C. Program Yang Diambil
+          </div>
+          <br /> -->
+          <div class="row q-col-gutter-sm">
+            <div class="col-6">
+              <q-span class="text-bold">Jenjang Pendidikan</q-span>
+              <q-radio
+                v-for="opt in ['TPQ', 'Pasca TPQ', 'Private']"
+                :key="opt"
+                v-model="store.form.program"
+                :val="opt"
+                :label="opt.charAt(0).toUpperCase() + opt.slice(1)"
+                checked-icon="task_alt"
+                unchecked-icon="panorama_fish_eye"
+              />
+            </div>
+            <div class="col-6 flex justify-end">
+              <q-uploader
+                ref="uploaderRef"
+                style="max-width: 300px"
+                label="Masukkan Foto Siswa"
+                max-file-size="524288"
+                accept=".jpg, .jpeg"
+                @added="onFileAdded"
+                @rejected="onRejected"
+              />
+            </div>
+          </div>
         </q-card-section>
         <q-separator />
         <q-card-section align="right">
@@ -298,10 +327,16 @@
 <script setup>
 import { useMsiswaStore } from 'src/stores/master/siswa'
 import DateInput from 'src/components/DateInput.vue'
+import { useQuasar } from 'quasar'
+import { ref } from 'vue'
 
 const store = useMsiswaStore()
 const emits = defineEmits(['back'])
 const pendidikan = ['Tidak Sekolah', 'SD', 'SMP', 'SMA', 'D1', 'D2', 'D3', 'D4', 'S1', 'S2', 'S3']
+
+const $q = useQuasar()
+
+const uploaderRef = ref(null)
 
 const props = defineProps({
   data: {
@@ -314,10 +349,23 @@ const props = defineProps({
   },
 })
 
+function onRejected() {
+  // Notify plugin needs to be installed
+  // https://v2.quasar.dev/quasar-plugins/notify#Installation
+  $q.notify({
+    type: 'negative',
+    message: `File Harus Berformat jpg atau jpeg dan Maksimal 512 Kb`,
+  })
+}
+
 if (props.data) {
   store.form.id = props.data?.id
   store.form.nama = props.data?.name
   store.form.nik = props.data?.nik
+}
+
+function onFileAdded(files) {
+  store.uploadedFiles = files
 }
 
 function onSubmit() {

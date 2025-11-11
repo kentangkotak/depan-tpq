@@ -41,9 +41,14 @@
               <q-list v-for="(item, index) in store.items" :key="index" class="full-width">
                 <q-item clickable v-ripple class="q-mb-sm">
                   <q-item-section avatar style="width: 35px !important; min-width: 25px !important">
-                    <q-icon name="people" color="black" size="20px" />
-                  </q-item-section>
+                    <!-- <q-icon name="people" color="black" size="20px" /> -->
 
+                    <img
+                      :src="item.foto"
+                      style="width: 30px; height: 30px; border-radius: 50%"
+                      alt="Foto Siswa"
+                    />
+                  </q-item-section>
                   <q-item-section top class="text-left">
                     <q-item-label lines="1">
                       Nis :

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { date } from 'quasar'
 import { api } from 'src/boot/axios'
-import { notifSuccess } from 'src/modules/notifs'
+import { notifError, notifSuccess } from 'src/modules/notifs'
 
 export const useMsiswaStore = defineStore('msiswa', {
   state: () => ({
@@ -37,9 +37,11 @@ export const useMsiswaStore = defineStore('msiswa', {
       pendidikanibu: '',
       nohpibu: '',
       alamatibu: '',
+      program: '',
     },
     tgllahirdisplay: date.formatDate(new Date(), 'DD-MM-YYYY'),
     isError: false,
+    uploadedFiles: [],
   }),
   actions: {
     getlist() {
@@ -59,34 +61,69 @@ export const useMsiswaStore = defineStore('msiswa', {
           })
       })
     },
-    simpan() {
+    // simpan() {
+    //   this.loading = true
+    //   this.isError = false
+    //   return new Promise((resolve, reject) => {
+    //     api
+    //       .post('/master/siswa/simpan', this.form)
+    //       .then(({ data }) => {
+    //         const newData = data?.data
+    //         if (this.form.id === '') {
+    //           this.items.unshift(newData)
+    //         } else {
+    //           this.items = this.items.map((item) => {
+    //             if (item.id === newData.id) {
+    //               return newData
+    //             }
+    //             return item
+    //           })
+    //         }
+    //         this.initReset()
+    //         notifSuccess(data?.message)
+    //         this.loading = false
+    //         resolve(data)
+    //       })
+    //       .catch((err) => {
+    //         this.loading = false
+    //         reject(err)
+    //       })
+    //   })
+    // },
+    async simpan() {
       this.loading = true
       this.isError = false
-      return new Promise((resolve, reject) => {
-        api
-          .post('/master/siswa/simpan', this.form)
-          .then(({ data }) => {
-            const newData = data?.data
-            if (this.form.id === '') {
-              this.items.unshift(newData)
-            } else {
-              this.items = this.items.map((item) => {
-                if (item.id === newData.id) {
-                  return newData
-                }
-                return item
-              })
-            }
-            this.initReset()
-            notifSuccess(data?.message)
-            this.loading = false
-            resolve(data)
-          })
-          .catch((err) => {
-            this.loading = false
-            reject(err)
-          })
-      })
+      try {
+        const formData = new FormData()
+
+        for (const key in this.form) {
+          formData.append(key, this.form[key])
+        }
+
+        // Tambah file dari uploader
+        if (this.uploadedFiles.length > 0) {
+          formData.append('foto', this.uploadedFiles[0]) // ambil file pertama
+        }
+
+        const { data } = await api.post('/master/siswa/simpan', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+
+        const newData = data.data
+        if (!this.form.id) {
+          this.items.unshift(newData)
+        } else {
+          this.items = this.items.map((i) => (i.id === newData.id ? newData : i))
+        }
+
+        notifSuccess(data.message)
+      } catch (err) {
+        this.isError = true
+        notifError(err.response?.data?.message || 'Gagal menyimpan data')
+        throw err
+      } finally {
+        this.loading = false
+      }
     },
     initReset() {
       this.form.id = ''
