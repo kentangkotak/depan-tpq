@@ -14,11 +14,15 @@ const routes = [
             meta: { requiresAuth: true },
           },
           {
-            path: 'kas',
-            component: () => import('pages/master/kas/IndexPage.vue'),
+            path: 'pekerjaan',
+            component: () => import('pages/master/pekerjaan/IndexPage.vue'),
             meta: { requiresAuth: true },
           },
         ],
+      },
+      {
+        path: 'logout',
+        component: () => import('src/pages/LogoutPage.vue'),
       },
     ],
   },

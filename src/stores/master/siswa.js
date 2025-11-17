@@ -115,7 +115,7 @@ export const useMsiswaStore = defineStore('msiswa', {
         } else {
           this.items = this.items.map((i) => (i.id === newData.id ? newData : i))
         }
-
+        this.initReset()
         notifSuccess(data.message)
       } catch (err) {
         this.isError = true
@@ -128,7 +128,31 @@ export const useMsiswaStore = defineStore('msiswa', {
     initReset() {
       this.form.id = ''
       this.form.nama = ''
-      this.form.nik = ''
+      this.form.nis = ''
+      ;((this.form.namalengkap = ''),
+        (this.form.namapanggilan = ''),
+        (this.form.tempatlahir = ''),
+        (this.form.tgllahir = date.formatDate(new Date(), 'YYYY-MM-DD')),
+        (this.form.kelamin = ''),
+        (this.form.anakke = ''),
+        (this.form.tinggibadan = ''),
+        (this.form.beratbadan = ''),
+        (this.form.hobi = ''),
+        (this.form.namaayah = ''),
+        (this.form.pekerjaanayah = ''),
+        (this.form.tempatlahirayah = ''),
+        (this.form.tgllahirayah = date.formatDate(new Date(), 'YYYY-MM-DD')),
+        (this.form.pendidikanayah = ''),
+        (this.form.nohpayah = ''),
+        (this.form.alamatayah = ''),
+        (this.form.namaibu = ''),
+        (this.form.pekerjaanibu = ''),
+        (this.form.tempatlahiribu = ''),
+        (this.form.tgllahiribu = date.formatDate(new Date(), 'YYYY-MM-DD')),
+        (this.form.pendidikanibu = ''),
+        (this.form.nohpibu = ''),
+        (this.form.alamatibu = ''),
+        (this.form.program = ''))
     },
   },
 })
